@@ -171,12 +171,11 @@ export default function AnnotatedChart({
                   style={{
                     width: '100%',
                     padding: '0.75rem 1rem',
-                    borderBottom: '1px solid var(--border)',
                     background: isActive ? 'rgba(201,168,76,0.06)' : 'transparent',
                     border: 'none',
                     borderBottom: '1px solid var(--border)',
                     cursor: 'pointer',
-                    textAlign: 'left',
+                    textAlign: 'left' as const,
                     display: 'flex',
                     gap: '0.6rem',
                     alignItems: 'flex-start',
