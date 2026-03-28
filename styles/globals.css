@@ -1,0 +1,196 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700;900&family=JetBrains+Mono:wght@400;500&family=Inter:wght@300;400;500;600&display=swap');
+
+:root {
+  /* Livermore dark gold theme */
+  --bg-primary:    #0a0a0b;
+  --bg-secondary:  #111114;
+  --bg-card:       #16161a;
+  --bg-elevated:   #1c1c22;
+
+  --gold:          #c9a84c;
+  --gold-light:    #e8c97a;
+  --gold-dim:      #8a6f30;
+  --gold-glow:     rgba(201, 168, 76, 0.15);
+
+  --red:           #e05252;
+  --green:         #4caf82;
+  --blue:          #5b8dee;
+  --purple:        #9b72cf;
+
+  --text-primary:  #f0ead6;
+  --text-secondary:#9a9080;
+  --text-dim:      #5a5448;
+
+  --border:        rgba(201, 168, 76, 0.12);
+  --border-bright: rgba(201, 168, 76, 0.3);
+
+  --font-display:  'Playfair Display', Georgia, serif;
+  --font-body:     'Inter', sans-serif;
+  --font-mono:     'JetBrains Mono', monospace;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.7;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--bg-primary); }
+::-webkit-scrollbar-thumb { background: var(--gold-dim); border-radius: 3px; }
+
+/* Selection */
+::selection { background: var(--gold-glow); color: var(--gold-light); }
+
+/* Typography scale */
+h1, h2, h3, h4 {
+  font-family: var(--font-display);
+  color: var(--text-primary);
+  line-height: 1.25;
+}
+
+h1 { font-size: clamp(2rem, 5vw, 3.5rem); font-weight: 900; }
+h2 { font-size: clamp(1.5rem, 3vw, 2.25rem); font-weight: 700; }
+h3 { font-size: clamp(1.2rem, 2vw, 1.5rem); font-weight: 600; }
+
+p { color: var(--text-primary); margin-bottom: 1.25rem; }
+
+a { color: var(--gold); text-decoration: none; transition: color 0.2s; }
+a:hover { color: var(--gold-light); }
+
+code {
+  font-family: var(--font-mono);
+  font-size: 0.85em;
+  background: var(--bg-elevated);
+  color: var(--gold-light);
+  padding: 0.15em 0.4em;
+  border-radius: 4px;
+  border: 1px solid var(--border);
+}
+
+pre {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 1.5rem;
+  overflow-x: auto;
+  margin: 1.5rem 0;
+}
+
+pre code {
+  background: none;
+  border: none;
+  padding: 0;
+  font-size: 0.9rem;
+}
+
+blockquote {
+  border-left: 3px solid var(--gold);
+  padding: 0.5rem 0 0.5rem 1.5rem;
+  margin: 1.5rem 0;
+  color: var(--text-secondary);
+  font-style: italic;
+  font-family: var(--font-display);
+}
+
+hr {
+  border: none;
+  border-top: 1px solid var(--border);
+  margin: 2.5rem 0;
+}
+
+/* MDX prose content */
+.prose {
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+.prose h2 {
+  margin-top: 2.5rem;
+  margin-bottom: 1rem;
+  color: var(--gold-light);
+}
+
+.prose h3 {
+  margin-top: 2rem;
+  margin-bottom: 0.75rem;
+  color: var(--text-primary);
+}
+
+.prose ul, .prose ol {
+  padding-left: 1.5rem;
+  margin-bottom: 1.25rem;
+}
+
+.prose li {
+  margin-bottom: 0.4rem;
+  color: var(--text-primary);
+}
+
+.prose strong {
+  color: var(--gold-light);
+  font-weight: 600;
+}
+
+.prose em {
+  color: var(--text-secondary);
+}
+
+/* Utility classes */
+.gold { color: var(--gold); }
+.gold-light { color: var(--gold-light); }
+.red { color: var(--red); }
+.green { color: var(--green); }
+.mono { font-family: var(--font-mono); }
+.dim { color: var(--text-secondary); }
+
+.card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 1.5rem;
+}
+
+.card-elevated {
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-bright);
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 0 40px var(--gold-glow);
+}
+
+.label {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--gold-dim);
+}
+
+/* Animation utilities */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes pulse-gold {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(201,168,76,0); }
+  50%       { box-shadow: 0 0 20px 4px rgba(201,168,76,0.15); }
+}
+
+.fade-up { animation: fadeUp 0.5s ease forwards; }
+.pulse-gold { animation: pulse-gold 3s ease-in-out infinite; }

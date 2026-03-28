@@ -1,0 +1,44 @@
+{
+  "parts": [
+    {
+      "part": "I",
+      "title": "Reading the Market",
+      "description": "How institutional players move price, where GEX creates gravity, and why most traders read the wrong signals.",
+      "chapters": [
+        { "title": "Market Structure & Wyckoff Phases", "slug": "", "status": "draft" },
+        { "title": "GEX / Dealer Flow — The Hidden Bid", "slug": "", "status": "draft" },
+        { "title": "Volume Profile & VWAP as Institutional Reference", "slug": "", "status": "draft" }
+      ]
+    },
+    {
+      "part": "II",
+      "title": "The Livermore Edge",
+      "description": "Proprietary pattern analysis from 60 sessions of /ES data. The sell-off clock, first-hour range, and session anatomy.",
+      "chapters": [
+        { "title": "The 5–7 Session Sell-Off Clock", "slug": "sell-off-clock", "status": "published" },
+        { "title": "First-Hour Range & ORB Setups", "slug": "", "status": "draft" },
+        { "title": "Session Types: Trend, Range, Gap-and-Go, Reversal", "slug": "", "status": "draft" }
+      ]
+    },
+    {
+      "part": "III",
+      "title": "The Weapons",
+      "description": "Options mechanics for the advanced trader. 0DTE structure, spread selection, Greeks management under time pressure.",
+      "chapters": [
+        { "title": "Bear Call Spreads on Sell-Off Days", "slug": "", "status": "draft" },
+        { "title": "Bull Put Spreads — Selling the Bounce", "slug": "", "status": "draft" },
+        { "title": "Iron Condors Around GEX Walls", "slug": "", "status": "draft" }
+      ]
+    },
+    {
+      "part": "IV",
+      "title": "The Game Plan",
+      "description": "Execution, rules, and the psychology of waiting. Hard exits, kill switches, and why discipline is the only durable edge.",
+      "chapters": [
+        { "title": "Waiting Is a Position — The Full Framework", "slug": "", "status": "draft" },
+        { "title": "Hard Rules & Kill Switches", "slug": "", "status": "draft" },
+        { "title": "Thursday 14:00 ET: Why a Time Rule Beats a Price Rule", "slug": "", "status": "draft" }
+      ]
+    }
+  ]
+}

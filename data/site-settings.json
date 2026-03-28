@@ -1,0 +1,13 @@
+{
+  "title": "The Livermore Protocol",
+  "tagline": "A Trader's Field Manual",
+  "description": "Advanced /ES futures & options analysis. Wyckoff, GEX, 0DTE, and the Sell-Off Clock — built from 60 sessions of proprietary data.",
+  "subscribeUrl": "",
+  "stripeLink": "",
+  "socialLinks": {
+    "twitter": "",
+    "youtube": "",
+    "substack": ""
+  },
+  "disclaimer": "For educational purposes only. Not financial advice. All pattern statistics derived from proprietary /ES dataset (Jan–Mar 2026, 60 sessions)."
+}

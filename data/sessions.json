@@ -1,0 +1,61 @@
+{
+  "meta": {
+    "symbol": "ES",
+    "period": "Jan–Mar 2026",
+    "totalSessions": 60,
+    "lastUpdated": "2026-03-27"
+  },
+  "sellOffClock": {
+    "intervalDays": [5, 7],
+    "bounceRate": 1.0,
+    "avgBouncePercent": 0.82,
+    "confirmedEvents": 8,
+    "nextWindow": "2026-04-02",
+    "lastSellOff": "2026-03-24",
+    "confidence": 87
+  },
+  "firstHourRange": {
+    "avgRange": 18.4,
+    "medianRange": 16.2,
+    "breakoutHighRate": 0.68,
+    "breakoutLowRate": 0.71,
+    "rejectionRate": 0.29,
+    "sessionCount": 60
+  },
+  "orbSetups": [
+    { "date": "2026-01-06", "range": 14.5, "direction": "long", "outcome": "win", "pnl": 1.8 },
+    { "date": "2026-01-07", "range": 22.1, "direction": "short", "outcome": "win", "pnl": 2.4 },
+    { "date": "2026-01-08", "range": 11.2, "direction": "long", "outcome": "loss", "pnl": -1.0 },
+    { "date": "2026-01-09", "range": 19.8, "direction": "short", "outcome": "win", "pnl": 3.1 },
+    { "date": "2026-01-13", "range": 16.3, "direction": "long", "outcome": "win", "pnl": 1.5 },
+    { "date": "2026-01-14", "range": 24.5, "direction": "short", "outcome": "win", "pnl": 4.2 },
+    { "date": "2026-01-15", "range": 13.7, "direction": "long", "outcome": "win", "pnl": 1.2 },
+    { "date": "2026-01-16", "range": 9.8, "direction": "none", "outcome": "skip", "pnl": 0 }
+  ],
+  "sellOffDayStats": {
+    "lowBounceRate": 1.0,
+    "avgBounceFromLow": 0.65,
+    "maxDrawdownBeforeBounce": 0.22,
+    "optimalEntryWindow": "14:00-14:30 ET",
+    "hardExitTime": "Thursday 14:00 ET"
+  },
+  "gexLevels": {
+    "majorSupport": [5350, 5300, 5250],
+    "majorResistance": [5450, 5500, 5550],
+    "callWall": 5500,
+    "putWall": 5350,
+    "zeroGamma": 5420
+  },
+  "weeklyPatterns": {
+    "strongDays": ["Tuesday", "Wednesday"],
+    "weakDays": ["Thursday", "Monday"],
+    "highVolatilityDays": ["Thursday", "Friday"],
+    "bestEntryDays": ["Tuesday", "Wednesday"]
+  },
+  "sessionTypes": {
+    "trend": { "count": 22, "avgRange": 24.3 },
+    "range": { "count": 28, "avgRange": 11.8 },
+    "gap_and_go": { "count": 6, "avgRange": 31.2 },
+    "reversal": { "count": 4, "avgRange": 28.7 }
+  }
+}
