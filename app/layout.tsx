@@ -2,13 +2,21 @@ import type { Metadata } from 'next'
 import '../styles/globals.css'
 
 export const metadata: Metadata = {
-  title: 'The Livermore Protocol — A Trader\'s Field Manual',
+  title: "The Livermore Protocol — A Trader's Field Manual",
   description: 'Advanced /ES futures & options analysis. Wyckoff, GEX, 0DTE, and the Sell-Off Clock — built from 60 sessions of proprietary data.',
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
+      <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700;900&family=JetBrains+Mono:wght@400;500&family=Inter:wght@300;400;500;600&display=swap"
+          rel="stylesheet"
+        />
+      </head>
       <body>
         <nav style={{
           position: 'sticky', top: 0, zIndex: 100,
@@ -33,23 +41,17 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               Field Manual
             </span>
           </div>
-
           <div style={{ display: 'flex', gap: '1.75rem', alignItems: 'center' }}>
             {[
               { href: '/', label: 'Table of Contents' },
               { href: '/posts', label: 'All Posts' },
-              { href: '/dashboard', label: 'Live Dashboard' },
             ].map(({ href, label }) => (
               <a key={href} href={href} style={{
                 fontFamily: 'var(--font-mono)',
                 fontSize: '0.78rem',
                 color: 'var(--text-secondary)',
                 letterSpacing: '0.04em',
-                transition: 'color 0.2s',
-              }}
-              onMouseEnter={e => (e.currentTarget.style.color = 'var(--gold)')}
-              onMouseLeave={e => (e.currentTarget.style.color = 'var(--text-secondary)')}
-              >
+              }}>
                 {label}
               </a>
             ))}
@@ -62,7 +64,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               borderRadius: 6,
               fontWeight: 700,
               letterSpacing: '0.06em',
-              transition: 'background 0.2s',
             }}>
               Subscribe
             </a>

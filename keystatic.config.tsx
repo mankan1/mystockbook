@@ -3,17 +3,18 @@
 // Access the editor at: http://localhost:3000/keystatic
 
 import { config, collection, singleton, fields } from '@keystatic/core'
+import { wrapper } from '@keystatic/core/content-components'
 
 export default config({
-  storage: {
-    // Git-based: all edits commit directly to your GitHub repo
-    // Change to 'local' for offline-only editing during development
-    kind: 'github',
-    repo: {
-      owner: 'REPLACE_WITH_YOUR_GITHUB_USERNAME',   // ← change this
-      name:  'livermore-book',          // ← change this
-    },
-  },
+  storage: process.env.NODE_ENV === 'development'
+    ? { kind: 'local' }
+    : {
+        kind: 'github',
+        repo: {
+          owner: process.env.KEYSTATIC_GITHUB_REPO_OWNER ?? 'REPLACE_WITH_YOUR_GITHUB_USERNAME',
+          name:  process.env.KEYSTATIC_GITHUB_REPO_NAME  ?? 'livermore-book',
+        },
+      },
 
   // ── UI Branding ─────────────────────────────────────────────────────────────
   ui: {
@@ -114,7 +115,7 @@ export default config({
           fields.text({ label: 'Tag' }),
           {
             label: 'Tags',
-            itemLabel: props => props.fields.value,
+            itemLabel: props => props.value ?? '',
           }
         ),
 
@@ -131,7 +132,7 @@ export default config({
 
             // ── Chart Components ───────────────────────────────────────────────
 
-            ESLiveChart: fields.mdx.wrapper({
+            ESLiveChart: wrapper({
               label: '📈 /ES Live Chart',
               description: 'TradingView Lightweight Chart — live /ES price feed',
               schema: {
@@ -151,7 +152,7 @@ export default config({
               },
             }),
 
-            OptionsPayoff: fields.mdx.wrapper({
+            OptionsPayoff: wrapper({
               label: '⚙️ Options Payoff Diagram',
               description: 'Interactive payoff chart for any options strategy',
               schema: {
@@ -180,7 +181,7 @@ export default config({
               },
             }),
 
-            SellOffClock: fields.mdx.wrapper({
+            SellOffClock: wrapper({
               label: '⏱ Sell-Off Clock',
               description: 'The 5–7 session sell-off clock visualization',
               schema: {
@@ -190,7 +191,7 @@ export default config({
               },
             }),
 
-            GEXProfile: fields.mdx.wrapper({
+            GEXProfile: wrapper({
               label: '🏗️ GEX / Dealer Flow Profile',
               description: 'Gamma exposure profile with call/put walls',
               schema: {
@@ -203,7 +204,7 @@ export default config({
               },
             }),
 
-            WyckoffPhase: fields.mdx.wrapper({
+            WyckoffPhase: wrapper({
               label: '📊 Wyckoff Schematic',
               description: 'Interactive accumulation or distribution schematic',
               schema: {
@@ -239,7 +240,7 @@ export default config({
               },
             }),
 
-            TOSCapture: fields.mdx.wrapper({
+            TOSCapture: wrapper({
               label: '📷 TOS Chart Capture',
               description: 'Auto-updated ThinkOrSwim screenshot',
               schema: {
@@ -261,7 +262,7 @@ export default config({
 
             // ── Teaching Components ────────────────────────────────────────────
 
-            ChartQuiz: fields.mdx.wrapper({
+            ChartQuiz: wrapper({
               label: '🎯 What Would You Do Here? Quiz',
               description: 'Interactive quiz for testing chart reading skills',
               schema: {
@@ -337,7 +338,7 @@ export default config({
               },
             }),
 
-            AnnotatedChart: fields.mdx.wrapper({
+            AnnotatedChart: wrapper({
               label: '🔍 Annotated Chart Breakdown',
               description: 'Step-by-step chart with numbered teaching points',
               schema: {
@@ -377,7 +378,7 @@ export default config({
               },
             }),
 
-            VideoEmbed: fields.mdx.wrapper({
+            VideoEmbed: wrapper({
               label: '🎬 Video Walkthrough',
               description: 'Embed YouTube, Loom, or direct video',
               schema: {
