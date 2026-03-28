@@ -48,11 +48,9 @@ export default function ESLiveChart({
         },
         rightPriceScale: {
           borderColor: 'rgba(201,168,76,0.15)',
-          textColor: '#9a9080',
         },
         timeScale: {
           borderColor: 'rgba(201,168,76,0.15)',
-          textColor: '#9a9080',
           timeVisible: true,
           secondsVisible: false,
         },
