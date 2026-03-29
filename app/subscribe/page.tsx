@@ -30,10 +30,14 @@ export default function SubscribePage() {
   const handleGoogleSignIn = useCallback(async (response: any) => {
     setError(null)
     try {
+      console.log('Sending credential to backend, length:', response?.credential?.length)
+      if (!response?.credential) {
+        throw new Error('No credential received from Google')
+      }
       const res = await fetch(`${API}/api/verify-google`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ token: response.credential }),
+        body: JSON.stringify({ credential: response.credential }),
       })
       if (!res.ok) {
         const text = await res.text()
@@ -85,9 +89,13 @@ export default function SubscribePage() {
       if (!g) return
       g.accounts.id.initialize({
         client_id: GOOGLE_CLIENT_ID,
-        callback: handleGoogleSignIn,
+        callback: (response: any) => {
+          console.log('Google callback fired, credential length:', response?.credential?.length)
+          handleGoogleSignIn(response)
+        },
         ux_mode: 'popup',
         use_fedcm_for_prompt: false,
+        itp_support: true,
       })
       g.accounts.id.renderButton(
         document.getElementById('google-signin-btn'),
