@@ -85,7 +85,7 @@ export default async function PostPage({ params }: { params: { slug: string } })
         )}
       </header>
 
-      {meta.frameworks?.length > 0 && (
+      {Array.isArray(meta.frameworks) && meta.frameworks.length > 0 && (
         <div style={{ display: 'flex', gap: '0.4rem', marginBottom: '2.5rem', flexWrap: 'wrap', alignItems: 'center' }}>
           <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.65rem', color: 'var(--text-dim)', marginRight: 4 }}>Frameworks:</span>
           {meta.frameworks.map((f: string) => (
