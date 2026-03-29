@@ -39,11 +39,13 @@ export default function SubscribePage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ credential: response.credential }),
       })
+      const text = await res.text()
+      console.log('Backend response:', res.status, text)
       if (!res.ok) {
-        const text = await res.text()
         throw new Error(`Server error ${res.status}: ${text}`)
       }
-      const data = await res.json()
+      let data: any
+      try { data = JSON.parse(text) } catch { throw new Error('Invalid JSON response') }
       if (data.session_token && data.email) {
         localStorage.setItem('lp_session', data.session_token)
         localStorage.setItem('lp_email', data.email)
