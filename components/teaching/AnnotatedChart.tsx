@@ -41,7 +41,8 @@ export default function AnnotatedChart({
   const [activeAnnotation, setActiveAnnotation] = useState<number | null>(null)
   const [view, setView] = useState<'annotated' | 'before' | 'after'>('annotated')
 
-  const active = annotations.find(a => a.id === activeAnnotation)
+  const safeAnnotations = Array.isArray(annotations) ? annotations : []
+  const active = safeAnnotations.find(a => a.id === activeAnnotation)
 
   return (
     <div style={{
@@ -127,7 +128,7 @@ export default function AnnotatedChart({
           )}
 
           {/* Annotation number badges overlay (for annotated view) */}
-          {view === 'annotated' && annotations.map(ann => (
+          {view === 'annotated' && safeAnnotations.map(ann => (
             <button
               key={ann.id}
               onClick={() => setActiveAnnotation(activeAnnotation === ann.id ? null : ann.id)}
@@ -161,7 +162,7 @@ export default function AnnotatedChart({
         <div style={{ display: 'flex', flexDirection: 'column' }}>
           {/* Annotation list */}
           <div style={{ flex: 1, overflow: 'auto', maxHeight: 380 }}>
-            {annotations.map(ann => {
+            {safeAnnotations.map(ann => {
               const style = CATEGORY_STYLES[ann.category]
               const isActive = activeAnnotation === ann.id
               return (
