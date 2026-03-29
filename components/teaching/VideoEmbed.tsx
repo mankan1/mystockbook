@@ -12,6 +12,7 @@ interface VideoEmbedProps {
 }
 
 function getEmbedUrl(url: string): { type: 'youtube' | 'loom' | 'mp4'; embedUrl: string } {
+  if (!url) return { type: 'mp4', embedUrl: '' }
   if (url.includes('youtube.com') || url.includes('youtu.be')) {
     const id = url.match(/(?:v=|youtu\.be\/)([^&\s]+)/)?.[1] || ''
     return { type: 'youtube', embedUrl: `https://www.youtube.com/embed/${id}?rel=0&modestbranding=1` }
@@ -97,18 +98,18 @@ export default function VideoEmbed({
       </div>
 
       {/* Chapter markers */}
-      {chapters.length > 0 && (
+      {safeChapters.length > 0 && (
         <div style={{ borderTop: '1px solid var(--border)' }}>
           <div style={{ padding: '0.5rem 1.25rem', fontFamily: 'var(--font-mono)', fontSize: '0.65rem', color: 'var(--text-dim)', textTransform: 'uppercase', letterSpacing: '0.1em', borderBottom: '1px solid var(--border)' }}>
             Chapters
           </div>
-          {chapters.map((ch, i) => (
+          {safeChapters.map((ch, i) => (
             <div
               key={i}
               onClick={() => setActiveChapter(activeChapter === i ? null : i)}
               style={{
                 padding: '0.5rem 1.25rem',
-                borderBottom: i < chapters.length - 1 ? '1px solid var(--border)' : 'none',
+                borderBottom: i < safeChapters.length - 1 ? '1px solid var(--border)' : 'none',
                 display: 'flex',
                 alignItems: 'center',
                 gap: '0.875rem',
