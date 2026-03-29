@@ -9,8 +9,8 @@ export default config({
   storage: {
     kind: 'github',
     repo: {
-      owner: process.env.KEYSTATIC_GITHUB_REPO_OWNER ?? 'REPLACE_WITH_YOUR_GITHUB_USERNAME',
-      name:  process.env.KEYSTATIC_GITHUB_REPO_NAME  ?? 'livermore-book',
+      owner: process.env.KEYSTATIC_GITHUB_REPO_OWNER ?? 'mankan1',
+      name:  process.env.KEYSTATIC_GITHUB_REPO_NAME  ?? 'mystockbook',
     },
   },
 
