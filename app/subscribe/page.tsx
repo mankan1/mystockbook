@@ -20,7 +20,7 @@ export default function SubscribePage() {
       const url = new URL(`${API}/api/check-pro`)
       url.searchParams.set('email', em)
       const headers: Record<string, string> = {}
-      if (tok) headers['X-Session-Token'] = tok
+      if (tok) headers['Authorization'] = `Bearer ${tok}`
       const res = await fetch(url.toString(), { headers })
       const data = await res.json()
       return data.pro === true
@@ -46,13 +46,13 @@ export default function SubscribePage() {
       }
       let data: any
       try { data = JSON.parse(text) } catch { throw new Error('Invalid JSON response') }
-      if (data.session_token && data.email) {
-        localStorage.setItem('lp_session', data.session_token)
+      if (data.token && data.email) {
+        localStorage.setItem('lp_session', data.token)
         localStorage.setItem('lp_email', data.email)
-        setSessionToken(data.session_token)
+        setSessionToken(data.token)
         setEmail(data.email)
-        const isPro = await checkPro(data.email, data.session_token)
-        setStatus(isPro ? 'pro' : 'signed-in')
+        // Use is_pro from response directly — no extra round trip needed
+        setStatus(data.is_pro ? 'pro' : 'signed-in')
       }
     } catch (e: any) {
       setError(e.message || 'Sign in failed — please try again')
