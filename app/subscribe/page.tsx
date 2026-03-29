@@ -3,7 +3,7 @@
 import { useEffect, useState, useCallback } from 'react'
 
 const API = process.env.NEXT_PUBLIC_API_BASE || 'https://stkbt-production-6bad.up.railway.app'
-const STRIPE_LINK = process.env.NEXT_PUBLIC_STRIPE_LINK || 'https://buy.stripe.com/YOUR_LINK'
+const STRIPE_LINK = process.env.NEXT_PUBLIC_STRIPE_LINK || ''
 const GOOGLE_CLIENT_ID = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || ''
 
 type Status = 'loading' | 'signed-out' | 'signed-in' | 'pro'
@@ -13,6 +13,7 @@ export default function SubscribePage() {
   const [email, setEmail] = useState<string | null>(null)
   const [sessionToken, setSessionToken] = useState<string | null>(null)
   const [polling, setPolling] = useState(false)
+  const [error, setError] = useState<string | null>(null)
 
   const checkPro = useCallback(async (em: string, tok?: string) => {
     try {
@@ -26,46 +27,18 @@ export default function SubscribePage() {
     } catch { return false }
   }, [])
 
-  // Initialize Google One Tap
-  useEffect(() => {
-    if (!GOOGLE_CLIENT_ID) return
-    const script = document.createElement('script')
-    script.src = 'https://accounts.google.com/gsi/client'
-    script.async = true
-    script.onload = () => {
-      ;(window as any).google?.accounts.id.initialize({
-        client_id: GOOGLE_CLIENT_ID,
-        callback: handleGoogleSignIn,
-        auto_select: false,
-      })
-      ;(window as any).google?.accounts.id.renderButton(
-        document.getElementById('google-btn'),
-        { theme: 'outline', size: 'large', width: 320, text: 'continue_with' }
-      )
-    }
-    document.head.appendChild(script)
-
-    // Check existing session
-    const saved = localStorage.getItem('lp_session')
-    const savedEmail = localStorage.getItem('lp_email')
-    if (saved && savedEmail) {
-      setSessionToken(saved)
-      setEmail(savedEmail)
-      checkPro(savedEmail, saved).then(isPro => {
-        setStatus(isPro ? 'pro' : 'signed-in')
-      })
-    } else {
-      setStatus('signed-out')
-    }
-  }, [checkPro])
-
-  async function handleGoogleSignIn(response: any) {
+  const handleGoogleSignIn = useCallback(async (response: any) => {
+    setError(null)
     try {
       const res = await fetch(`${API}/api/verify-google`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ token: response.credential }),
       })
+      if (!res.ok) {
+        const text = await res.text()
+        throw new Error(`Server error ${res.status}: ${text}`)
+      }
       const data = await res.json()
       if (data.session_token && data.email) {
         localStorage.setItem('lp_session', data.session_token)
@@ -75,16 +48,63 @@ export default function SubscribePage() {
         const isPro = await checkPro(data.email, data.session_token)
         setStatus(isPro ? 'pro' : 'signed-in')
       }
-    } catch (e) {
-      console.error('Sign in failed', e)
+    } catch (e: any) {
+      setError(e.message || 'Sign in failed — please try again')
+      setStatus('signed-out')
     }
-  }
+  }, [checkPro])
+
+  useEffect(() => {
+    // Check existing session first
+    const saved = localStorage.getItem('lp_session')
+    const savedEmail = localStorage.getItem('lp_email')
+    if (saved && savedEmail) {
+      setEmail(savedEmail)
+      setSessionToken(saved)
+      checkPro(savedEmail, saved).then(isPro => {
+        setStatus(isPro ? 'pro' : 'signed-in')
+      })
+      return
+    }
+
+    // Load Google Sign In
+    if (!GOOGLE_CLIENT_ID) {
+      setStatus('signed-out')
+      return
+    }
+
+    // Expose callback globally for Google's script
+    ;(window as any).handleGoogleSignIn = handleGoogleSignIn
+
+    const script = document.createElement('script')
+    script.src = 'https://accounts.google.com/gsi/client'
+    script.async = true
+    script.defer = true
+    script.onload = () => {
+      const g = (window as any).google
+      if (!g) return
+      g.accounts.id.initialize({
+        client_id: GOOGLE_CLIENT_ID,
+        callback: handleGoogleSignIn,
+        ux_mode: 'popup',
+        use_fedcm_for_prompt: false,
+      })
+      g.accounts.id.renderButton(
+        document.getElementById('google-signin-btn'),
+        { theme: 'filled_black', size: 'large', width: 300, text: 'continue_with', shape: 'rectangular' }
+      )
+    }
+    document.head.appendChild(script)
+    setStatus('signed-out')
+
+    return () => {
+      delete (window as any).handleGoogleSignIn
+    }
+  }, [checkPro, handleGoogleSignIn])
 
   function handleSubscribe() {
-    if (!email) return
-    // Open Stripe in new tab
+    if (!email || !STRIPE_LINK) return
     window.open(`${STRIPE_LINK}?prefilled_email=${encodeURIComponent(email)}`, '_blank')
-    // Start polling for PRO confirmation
     setPolling(true)
     let attempts = 0
     const interval = setInterval(async () => {
@@ -95,7 +115,7 @@ export default function SubscribePage() {
         setPolling(false)
         setStatus('pro')
       }
-      if (attempts > 40) { // 2 min timeout
+      if (attempts > 40) {
         clearInterval(interval)
         setPolling(false)
       }
@@ -108,6 +128,16 @@ export default function SubscribePage() {
     setStatus('signed-out')
     setEmail(null)
     setSessionToken(null)
+    // Re-render Google button
+    setTimeout(() => {
+      const g = (window as any).google
+      if (g) {
+        g.accounts.id.renderButton(
+          document.getElementById('google-signin-btn'),
+          { theme: 'filled_black', size: 'large', width: 300, text: 'continue_with' }
+        )
+      }
+    }, 100)
   }
 
   const features = [
@@ -131,14 +161,10 @@ export default function SubscribePage() {
         Full access to all posts, live /ES charts, and dataset updates.
       </p>
 
-      {/* Pricing card */}
       <div style={{ background: 'var(--bg-card)', border: '1px solid var(--border-bright)', borderRadius: 16, padding: '2rem', marginBottom: '1.5rem', boxShadow: '0 0 40px rgba(201,168,76,0.08)' }}>
-
-        {/* Price */}
         <div style={{ fontFamily: 'var(--font-display)', fontSize: '3rem', fontWeight: 900, color: 'var(--gold)', lineHeight: 1 }}>$29</div>
         <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.75rem', color: 'var(--text-dim)', marginTop: '0.25rem', marginBottom: '1.5rem' }}>per month · cancel anytime</div>
 
-        {/* Features */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: '0.6rem', marginBottom: '2rem', textAlign: 'left' }}>
           {features.map(f => (
             <div key={f} style={{ display: 'flex', gap: '0.75rem', fontSize: '0.88rem', color: 'var(--text-secondary)', alignItems: 'flex-start' }}>
@@ -148,7 +174,12 @@ export default function SubscribePage() {
           ))}
         </div>
 
-        {/* States */}
+        {error && (
+          <div style={{ background: 'rgba(224,82,82,0.1)', border: '1px solid var(--red)', borderRadius: 8, padding: '0.75rem', marginBottom: '1rem', fontFamily: 'var(--font-mono)', fontSize: '0.75rem', color: 'var(--red)' }}>
+            ⚠ {error}
+          </div>
+        )}
+
         {status === 'loading' && (
           <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.8rem', color: 'var(--text-dim)', padding: '1rem' }}>
             Checking session...
@@ -158,20 +189,25 @@ export default function SubscribePage() {
         {status === 'signed-out' && (
           <div>
             <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.75rem', color: 'var(--text-dim)', marginBottom: '1rem' }}>
-              Sign in to subscribe
+              Sign in with Google to subscribe
             </div>
-            <div id="google-btn" style={{ display: 'flex', justifyContent: 'center' }} />
+            <div id="google-signin-btn" style={{ display: 'flex', justifyContent: 'center', minHeight: 44 }} />
+            {!GOOGLE_CLIENT_ID && (
+              <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.7rem', color: 'var(--red)', marginTop: '0.5rem' }}>
+                NEXT_PUBLIC_GOOGLE_CLIENT_ID not configured
+              </div>
+            )}
           </div>
         )}
 
         {status === 'signed-in' && (
           <div>
             <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.72rem', color: 'var(--text-dim)', marginBottom: '1rem' }}>
-              Signed in as {email}
+              Signed in as <strong style={{ color: 'var(--text-secondary)' }}>{email}</strong>
             </div>
             <button
               onClick={handleSubscribe}
-              disabled={polling}
+              disabled={polling || !STRIPE_LINK}
               style={{
                 display: 'block', width: '100%',
                 background: polling ? 'var(--bg-elevated)' : 'var(--gold)',
@@ -202,6 +238,10 @@ export default function SubscribePage() {
             <a href="/posts" style={{ fontFamily: 'var(--font-mono)', fontSize: '0.8rem', color: 'var(--gold)', textDecoration: 'none' }}>
               Read all posts →
             </a>
+            <br />
+            <button onClick={handleSignOut} style={{ marginTop: '0.75rem', background: 'none', border: 'none', fontFamily: 'var(--font-mono)', fontSize: '0.7rem', color: 'var(--text-dim)', cursor: 'pointer' }}>
+              Sign out
+            </button>
           </div>
         )}
       </div>
