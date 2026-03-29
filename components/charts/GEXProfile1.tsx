@@ -90,14 +90,14 @@ const CustomTooltip = ({ active, payload }: any) => {
 
 export default function GEXProfile({
   levels,
-  spot,
-  zeroGamma,
-  callWall,
-  putWall,
+  safeSpot,
+  safeZeroGamma,
+  safeCallWall,
+  safePutWall,
   annotation,
   title,
 }: GEXProfileProps) {
-  // Coerce all props — Keystatic passes form values as strings
+  // Coerce all props safely
   const safeSpot = Number(spot) || 5420
   const safeZeroGamma = Number(zeroGamma) || 5400
   const safeCallWall = Number(callWall) || 5500
