@@ -23,7 +23,7 @@ export function getAllPosts(): PostMeta[] {
       const slug = file.replace('.mdx', '')
       const raw = fs.readFileSync(path.join(postsDir, file), 'utf8')
       const { data } = matter(raw)
-      return { frameworks: [], tags: [], ...data, slug } as PostMeta
+      return { frameworks: [], tags: [], ...(data as Partial<PostMeta>), slug } as PostMeta
     })
     .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
 }
@@ -32,7 +32,7 @@ export function getPostBySlug(slug: string) {
   const file = path.join(postsDir, `${slug}.mdx`)
   const raw = fs.readFileSync(file, 'utf8')
   const { data, content } = matter(raw)
-  return { meta: { frameworks: [], tags: [], ...data, slug } as PostMeta, content }
+  return { meta: { frameworks: [], tags: [], ...(data as Partial<PostMeta>), slug } as PostMeta, content }
 }
 
 export const CATEGORIES = [
