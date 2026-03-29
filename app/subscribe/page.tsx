@@ -23,7 +23,7 @@ export default function SubscribePage() {
       if (tok) headers['Authorization'] = `Bearer ${tok}`
       const res = await fetch(url.toString(), { headers })
       const data = await res.json()
-      return data.pro === true
+      return data.is_pro === true
     } catch { return false }
   }, [])
 
