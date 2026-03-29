@@ -32,8 +32,9 @@ export default function VideoEmbed({
   chapters = [],
   annotation,
 }: VideoEmbedProps) {
+  const safeChapters = Array.isArray(chapters) ? chapters : []
   const [activeChapter, setActiveChapter] = useState<number | null>(null)
-  const { type, embedUrl } = getEmbedUrl(url)
+  const { type, embedUrl } = getEmbedUrl(url || '')
 
   return (
     <div style={{
