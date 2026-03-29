@@ -23,7 +23,12 @@ interface OptionsPayoffProps {
 }
 
 function calcPayoff(strategy: Strategy, price: number, props: OptionsPayoffProps): number {
-  const { shortStrike = 0, longStrike = 0, shortStrike2 = 0, longStrike2 = 0, entry } = props
+  // Coerce to numbers — Keystatic CMS passes form values as strings
+  const shortStrike = Number(props.shortStrike) || 0
+  const longStrike  = Number(props.longStrike)  || 0
+  const shortStrike2 = Number(props.shortStrike2) || 0
+  const longStrike2  = Number(props.longStrike2)  || 0
+  const entry = Number(props.entry) || 0
 
   switch (strategy) {
     case 'long-call':
@@ -83,7 +88,7 @@ const STRATEGY_LABELS: Record<Strategy, string> = {
 export default function OptionsPayoff(props: OptionsPayoffProps) {
   const { strategy, spot, entry, annotation, shortStrike, longStrike } = props
 
-  const centerPrice = spot || shortStrike || longStrike || 5400
+  const centerPrice = Number(spot) || Number(props.shortStrike) || Number(props.longStrike) || 5400
   const range = centerPrice * 0.025  // ±2.5%
 
   const data = useMemo(() => {
