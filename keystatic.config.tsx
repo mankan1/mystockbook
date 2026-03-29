@@ -9,8 +9,8 @@ export default config({
   storage: {
     kind: 'github',
     repo: {
-      owner: process.env.KEYSTATIC_GITHUB_REPO_OWNER ?? 'mankan1',
-      name:  process.env.KEYSTATIC_GITHUB_REPO_NAME  ?? 'mystockbook',
+      owner: process.env.KEYSTATIC_GITHUB_REPO_OWNER ?? 'REPLACE_WITH_YOUR_GITHUB_USERNAME',
+      name:  process.env.KEYSTATIC_GITHUB_REPO_NAME  ?? 'livermore-book',
     },
   },
 
@@ -524,6 +524,31 @@ export default config({
             { label: 'Major Resistance Strikes' }
           ),
         }, { label: 'GEX Levels' }),
+
+        orbSetups: fields.object({
+          avgBreakoutMove: fields.number({ label: 'Avg Breakout Move (pts)', defaultValue: 12.4 }),
+          winRate:         fields.number({ label: 'Win Rate (0-1)', defaultValue: 0.67 }),
+          avgRR:           fields.number({ label: 'Avg R:R', defaultValue: 2.1 }),
+        }, { label: 'ORB Setups' }),
+
+        sellOffDayStats: fields.object({
+          avgDecline:      fields.number({ label: 'Avg Decline (pts)', defaultValue: 28.4 }),
+          medianDecline:   fields.number({ label: 'Median Decline (pts)', defaultValue: 24.2 }),
+          bounceRate:      fields.number({ label: 'Bounce Rate (0-1)', defaultValue: 1.0 }),
+        }, { label: 'Sell-Off Day Stats' }),
+
+        weeklyPatterns: fields.object({
+          mondayTrend:    fields.text({ label: 'Monday Tendency', defaultValue: 'Continuation' }),
+          thursdayRisk:   fields.text({ label: 'Thursday Risk', defaultValue: 'High reversal rate' }),
+          fridayBias:     fields.text({ label: 'Friday Bias', defaultValue: 'Mean reversion' }),
+        }, { label: 'Weekly Patterns' }),
+
+        sessionTypes: fields.object({
+          sellOff:  fields.number({ label: 'Sell-Off Sessions', defaultValue: 12 }),
+          buyUp:    fields.number({ label: 'Buy-Up Sessions', defaultValue: 18 }),
+          chop:     fields.number({ label: 'Chop Sessions', defaultValue: 22 }),
+          other:    fields.number({ label: 'Other Sessions', defaultValue: 8 }),
+        }, { label: 'Session Types' }),
       },
     }),
 
