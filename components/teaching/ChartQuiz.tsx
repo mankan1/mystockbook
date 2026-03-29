@@ -29,7 +29,9 @@ export default function ChartQuiz({
   const [selected, setSelected] = useState<string | null>(null)
   const [revealed, setRevealed] = useState(false)
 
-  const selectedChoice = choices.find(c => c.id === selected)
+  // Guard against undefined choices from Keystatic
+  const safeChoices = Array.isArray(choices) ? choices : []
+  const selectedChoice = safeChoices.find(c => c.id === selected)
   const isCorrect = selectedChoice?.isCorrect ?? false
 
   const diffColor = {
@@ -153,7 +155,7 @@ export default function ChartQuiz({
 
         {/* Choices */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: '0.6rem' }}>
-          {choices.map(choice => {
+          {safeChoices.map(choice => {
             const isSelected = selected === choice.id
             const showResult = revealed && isSelected
 

@@ -89,18 +89,25 @@ const CustomTooltip = ({ active, payload }: any) => {
 }
 
 export default function GEXProfile({
-  levels = DEFAULT_LEVELS,
-  spot = 5420,
-  zeroGamma = 5400,
-  callWall = 5500,
-  putWall = 5350,
+  levels,
+  safeSpot,
+  safeZeroGamma,
+  safeCallWall,
+  safePutWall,
   annotation,
-  title = 'GEX / Dealer Gamma Profile',
+  title,
 }: GEXProfileProps) {
+  // Coerce all props safely
+  const safeSpot = Number(spot) || 5420
+  const safeZeroGamma = Number(zeroGamma) || 5400
+  const safeCallWall = Number(callWall) || 5500
+  const safePutWall = Number(putWall) || 5350
+  const safeTitle = title || 'GEX / Dealer Gamma Profile'
+  const safeLevels = Array.isArray(levels) && levels.length > 0 ? levels : DEFAULT_LEVELS
 
   const sortedLevels = useMemo(() =>
-    [...levels].sort((a, b) => a.strike - b.strike),
-    [levels]
+    [...safeLevels].sort((a, b) => a.strike - b.strike),
+    [safeLevels]
   )
 
   const absMax = Math.max(...sortedLevels.map(l => Math.abs(l.gex)))
@@ -127,17 +134,17 @@ export default function GEXProfile({
             Dealer Flow
           </div>
           <div style={{ fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: '1rem', color: 'var(--text-primary)' }}>
-            {title}
+            {safeTitle}
           </div>
         </div>
 
         {/* Key levels legend */}
         <div style={{ display: 'flex', gap: '1rem', fontSize: '0.72rem', fontFamily: 'var(--font-mono)' }}>
           {[
-            { label: 'Spot', value: spot, color: 'var(--gold)' },
-            { label: 'Call Wall', value: callWall, color: 'var(--green)' },
-            { label: 'Put Wall', value: putWall, color: 'var(--red)' },
-            { label: '0-Gamma', value: zeroGamma, color: 'var(--blue)' },
+            { label: 'Spot', value: safeSpot, color: 'var(--gold)' },
+            { label: 'Call Wall', value: safeCallWall, color: 'var(--green)' },
+            { label: 'Put Wall', value: safePutWall, color: 'var(--red)' },
+            { label: '0-Gamma', value: safeZeroGamma, color: 'var(--blue)' },
           ].map(({ label, value, color }) => (
             <div key={label} style={{ textAlign: 'center' }}>
               <div style={{ color, fontWeight: 700 }}>{value}</div>
@@ -175,16 +182,16 @@ export default function GEXProfile({
 
             {/* Spot price line */}
             <ReferenceLine
-              y={spot}
+              y={safeSpot}
               stroke="var(--gold)"
               strokeWidth={1.5}
               strokeDasharray="4 4"
-              label={{ value: `SPOT ${spot}`, position: 'right', fill: 'var(--gold)', fontSize: 9, fontFamily: 'JetBrains Mono' }}
+              label={{ value: `SPOT ${safeSpot}`, position: 'right', fill: 'var(--gold)', fontSize: 9, fontFamily: 'JetBrains Mono' }}
             />
 
             {/* Call wall */}
             <ReferenceLine
-              y={callWall}
+              y={safeCallWall}
               stroke="var(--green)"
               strokeWidth={1}
               strokeDasharray="3 3"
@@ -193,7 +200,7 @@ export default function GEXProfile({
 
             {/* Put wall */}
             <ReferenceLine
-              y={putWall}
+              y={safePutWall}
               stroke="var(--red)"
               strokeWidth={1}
               strokeDasharray="3 3"

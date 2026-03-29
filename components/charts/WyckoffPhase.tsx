@@ -41,13 +41,15 @@ const EVENT_DESCRIPTIONS: Record<string, string> = {
 
 export default function WyckoffPhase({
   activePhase = 'accumulation',
-  highlightEvents = [],
+  highlightEvents,
   annotation,
   mode = 'accumulation',
 }: WyckoffPhaseProps) {
+  // Coerce — Keystatic may pass undefined or non-array
+  const safeHighlightEvents: string[] = Array.isArray(highlightEvents) ? highlightEvents : []
   const [hoveredEvent, setHoveredEvent] = useState<string | null>(null)
 
-  const displayEvent = hoveredEvent || (highlightEvents[0] ?? null)
+  const displayEvent = hoveredEvent || (safeHighlightEvents[0] ?? null)
 
   return (
     <div style={{
@@ -95,13 +97,13 @@ export default function WyckoffPhase({
         <div style={{ borderRight: '1px solid var(--border)', padding: '1rem' }}>
           {mode === 'accumulation' ? (
             <AccumulationSVG
-              highlightEvents={highlightEvents}
+              highlightEvents={safeHighlightEvents}
               hoveredEvent={hoveredEvent}
               onHover={setHoveredEvent}
             />
           ) : (
             <DistributionSVG
-              highlightEvents={highlightEvents}
+              highlightEvents={safeHighlightEvents}
               hoveredEvent={hoveredEvent}
               onHover={setHoveredEvent}
             />
@@ -115,7 +117,7 @@ export default function WyckoffPhase({
               ? { PS: 0, SC: 0, AR: 0, ST: 0, Spring: 0, Test: 0, SOS: 0, LPS: 0 }
               : { PSY: 0, BC: 0, AR_D: 0, UT: 0, UTAD: 0, SOW: 0, LPSY: 0 }
             ).map(([event]) => {
-              const isHighlighted = highlightEvents.includes(event as Event)
+              const isHighlighted = safeHighlightEvents.includes(event as Event)
               const isHovered = hoveredEvent === event
               return (
                 <div

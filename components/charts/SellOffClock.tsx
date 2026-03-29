@@ -12,9 +12,15 @@ interface SellOffClockProps {
 export default function SellOffClock({
   nextWindow,
   confidence,
-  intervalDays = [5, 7],
+  intervalDays,
   lastSellOff,
 }: SellOffClockProps) {
+  // Coerce all props — Keystatic passes arrays/numbers as strings
+  const safeIntervalDays: [number, number] = Array.isArray(intervalDays) && intervalDays.length === 2
+    ? [Number(intervalDays[0]) || 5, Number(intervalDays[1]) || 7]
+    : [5, 7]
+  const safeConfidence = Number(confidence) || 87
+
   const daysUntil = useMemo(() => {
     const now = new Date()
     const target = new Date(nextWindow)
@@ -26,7 +32,7 @@ export default function SellOffClock({
   const urgencyColor = urgency === 'critical' ? 'var(--red)' : urgency === 'high' ? 'var(--gold)' : 'var(--green)'
 
   // Clock segments: 7-day cycle
-  const totalDays = intervalDays[1]
+  const totalDays = safeIntervalDays[1]
   const elapsedDays = lastSellOff
     ? Math.floor((new Date().getTime() - new Date(lastSellOff).getTime()) / (1000 * 60 * 60 * 24))
     : totalDays - daysUntil
@@ -34,7 +40,7 @@ export default function SellOffClock({
   const segments = Array.from({ length: totalDays }, (_, i) => {
     const day = i + 1
     const isElapsed = day <= elapsedDays
-    const isWindow = day >= intervalDays[0]
+    const isWindow = day >= safeIntervalDays[0]
     const isCurrent = day === elapsedDays
     return { day, isElapsed, isWindow, isCurrent }
   })
@@ -155,7 +161,7 @@ export default function SellOffClock({
           fontSize: '0.75rem',
           color: 'var(--gold)',
         }}>
-          {confidence}% confidence
+          {safeConfidence}% confidence
         </div>
       </div>
 
@@ -177,7 +183,7 @@ export default function SellOffClock({
           <div style={{ background: 'var(--bg-elevated)', borderRadius: 8, padding: '0.75rem' }}>
             <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.65rem', color: 'var(--text-dim)', marginBottom: 4, textTransform: 'uppercase' }}>Interval</div>
             <div style={{ fontFamily: 'var(--font-mono)', fontSize: '1rem', color: 'var(--text-primary)', fontWeight: 600 }}>
-              {intervalDays[0]}–{intervalDays[1]} sessions
+              {safeIntervalDays[0]}–{safeIntervalDays[1]} sessions
             </div>
           </div>
           <div style={{ background: 'var(--bg-elevated)', borderRadius: 8, padding: '0.75rem' }}>
