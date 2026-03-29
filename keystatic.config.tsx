@@ -6,15 +6,13 @@ import { config, collection, singleton, fields } from '@keystatic/core'
 import { wrapper } from '@keystatic/core/content-components'
 
 export default config({
-  storage: process.env.NODE_ENV === 'development'
-    ? { kind: 'local' }
-    : {
-        kind: 'github',
-        repo: {
-          owner: process.env.KEYSTATIC_GITHUB_REPO_OWNER ?? 'REPLACE_WITH_YOUR_GITHUB_USERNAME',
-          name:  process.env.KEYSTATIC_GITHUB_REPO_NAME  ?? 'livermore-book',
-        },
-      },
+  storage: {
+    kind: 'github',
+    repo: {
+      owner: process.env.KEYSTATIC_GITHUB_REPO_OWNER ?? 'REPLACE_WITH_YOUR_GITHUB_USERNAME',
+      name:  process.env.KEYSTATIC_GITHUB_REPO_NAME  ?? 'livermore-book',
+    },
+  },
 
   // ── UI Branding ─────────────────────────────────────────────────────────────
   ui: {
