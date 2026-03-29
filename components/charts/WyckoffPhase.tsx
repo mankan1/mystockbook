@@ -191,6 +191,7 @@ function AccumulationSVG({ highlightEvents, hoveredEvent, onHover }: {
   hoveredEvent: string | null
   onHover: (e: string | null) => void
 }) {
+  const safeHL = Array.isArray(highlightEvents) ? highlightEvents : []
   const W = 500, H = 280
 
   // Schematic price path for accumulation
@@ -244,7 +245,7 @@ function AccumulationSVG({ highlightEvents, hoveredEvent, onHover }: {
 
       {/* Event dots and labels */}
       {events.map(([x, y, event, lx, ly]) => {
-        const isActive = hoveredEvent === event || highlightEvents.includes(event)
+        const isActive = hoveredEvent === event || safeHL.includes(event)
         return (
           <g
             key={event}
@@ -281,6 +282,7 @@ function DistributionSVG({ highlightEvents, hoveredEvent, onHover }: {
   hoveredEvent: string | null
   onHover: (e: string | null) => void
 }) {
+  const safeHL = Array.isArray(highlightEvents) ? highlightEvents : []
   const W = 500, H = 280
   const path = `
     M 20,180 L 60,80 L 90,160 L 120,60 L 150,30 L 185,110 
@@ -320,7 +322,7 @@ function DistributionSVG({ highlightEvents, hoveredEvent, onHover }: {
 
       {/* Event dots */}
       {events.map(([x, y, event, lx, ly]) => {
-        const isActive = hoveredEvent === event || highlightEvents.includes(event)
+        const isActive = hoveredEvent === event || safeHL.includes(event)
         return (
           <g key={event} onMouseEnter={() => onHover(event)} onMouseLeave={() => onHover(null)} style={{ cursor: 'pointer' }}>
             <circle cx={x} cy={y} r={isActive ? 7 : 5}
