@@ -509,6 +509,7 @@ export default config({
           breakoutHighRate: fields.number({ label: 'Breakout High Rate (0–1)', defaultValue: 0.68 }),
           breakoutLowRate:  fields.number({ label: 'Breakout Low Rate (0–1)', defaultValue: 0.71 }),
           rejectionRate:    fields.number({ label: 'Rejection Rate (0–1)', defaultValue: 0.29 }),
+          sessionCount:     fields.number({ label: 'Session Count', defaultValue: 60 }),
         }, { label: 'First-Hour Range Stats' }),
 
         gexLevels: fields.object({
@@ -525,29 +526,37 @@ export default config({
           ),
         }, { label: 'GEX Levels' }),
 
-        orbSetups: fields.object({
-          avgBreakoutMove: fields.number({ label: 'Avg Breakout Move (pts)', defaultValue: 12.4 }),
-          winRate:         fields.number({ label: 'Win Rate (0-1)', defaultValue: 0.67 }),
-          avgRR:           fields.number({ label: 'Avg R:R', defaultValue: 2.1 }),
-        }, { label: 'ORB Setups' }),
+        orbSetups: fields.array(
+          fields.object({
+            date:      fields.text({ label: 'Date' }),
+            range:     fields.number({ label: 'Range (pts)', defaultValue: 0 }),
+            direction: fields.text({ label: 'Direction' }),
+            outcome:   fields.text({ label: 'Outcome' }),
+            pnl:       fields.number({ label: 'P&L (R)', defaultValue: 0 }),
+          }),
+          { label: 'ORB Setups' }
+        ),
 
         sellOffDayStats: fields.object({
-          avgDecline:      fields.number({ label: 'Avg Decline (pts)', defaultValue: 28.4 }),
-          medianDecline:   fields.number({ label: 'Median Decline (pts)', defaultValue: 24.2 }),
-          bounceRate:      fields.number({ label: 'Bounce Rate (0-1)', defaultValue: 1.0 }),
+          lowBounceRate:           fields.number({ label: 'Low Bounce Rate (0-1)', defaultValue: 1.0 }),
+          avgBounceFromLow:        fields.number({ label: 'Avg Bounce From Low', defaultValue: 0.65 }),
+          maxDrawdownBeforeBounce: fields.number({ label: 'Max Drawdown Before Bounce', defaultValue: 0.22 }),
+          optimalEntryWindow:      fields.text({ label: 'Optimal Entry Window', defaultValue: '14:00-14:30 ET' }),
+          hardExitTime:            fields.text({ label: 'Hard Exit Time', defaultValue: 'Thursday 14:00 ET' }),
         }, { label: 'Sell-Off Day Stats' }),
 
         weeklyPatterns: fields.object({
-          mondayTrend:    fields.text({ label: 'Monday Tendency', defaultValue: 'Continuation' }),
-          thursdayRisk:   fields.text({ label: 'Thursday Risk', defaultValue: 'High reversal rate' }),
-          fridayBias:     fields.text({ label: 'Friday Bias', defaultValue: 'Mean reversion' }),
+          strongDays:        fields.array(fields.text({ label: 'Day' }), { label: 'Strong Days' }),
+          weakDays:          fields.array(fields.text({ label: 'Day' }), { label: 'Weak Days' }),
+          highVolatilityDays: fields.array(fields.text({ label: 'Day' }), { label: 'High Volatility Days' }),
+          bestEntryDays:     fields.array(fields.text({ label: 'Day' }), { label: 'Best Entry Days' }),
         }, { label: 'Weekly Patterns' }),
 
         sessionTypes: fields.object({
-          sellOff:  fields.number({ label: 'Sell-Off Sessions', defaultValue: 12 }),
-          buyUp:    fields.number({ label: 'Buy-Up Sessions', defaultValue: 18 }),
-          chop:     fields.number({ label: 'Chop Sessions', defaultValue: 22 }),
-          other:    fields.number({ label: 'Other Sessions', defaultValue: 8 }),
+          trend:      fields.object({ count: fields.number({ label: 'Count', defaultValue: 0 }), avgRange: fields.number({ label: 'Avg Range', defaultValue: 0 }) }, { label: 'Trend' }),
+          range:      fields.object({ count: fields.number({ label: 'Count', defaultValue: 0 }), avgRange: fields.number({ label: 'Avg Range', defaultValue: 0 }) }, { label: 'Range' }),
+          gap_and_go: fields.object({ count: fields.number({ label: 'Count', defaultValue: 0 }), avgRange: fields.number({ label: 'Avg Range', defaultValue: 0 }) }, { label: 'Gap and Go' }),
+          reversal:   fields.object({ count: fields.number({ label: 'Count', defaultValue: 0 }), avgRange: fields.number({ label: 'Avg Range', defaultValue: 0 }) }, { label: 'Reversal' }),
         }, { label: 'Session Types' }),
       },
     }),
